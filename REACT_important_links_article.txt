@@ -1,0 +1,245 @@
+### React fiber documentation ###
+https://github.com/acdlite/react-fiber-architecture?tab=readme-ov-file
+
+### Open source UI component library ###
+https://www.devui.io/
+
+### Article based on React ###
+https://medium.com/@osinachiokoroafor21/an-in-depth-article-on-react-js-d75084e9980d
+https://medium.com/fantageek/10-articles-that-reactjs-developer-should-read-1b4d6fb6d057
+https://codedamn.com/news/reactjs/react-fiber-architecture
+https://codedamn.com/learn/react-design-patterns
+https://www.freecodecamp.org/news/dom-manipulation-htmlcollection-vs-nodelist/
+
+### FAQ Regarding Fiber, Reconciliation ###
+Q: What is React Fiber?
+
+A: React Fiber is a complete rewrite of React's core reconciliation algorithm, aiming to improve performance and responsiveness. 
+It enables incremental rendering, allowing React to divide rendering work into smaller chunks and prioritize updates more
+efficiently.
+
+Q: How is React Fiber different from the previous reconciliation algorithm?
+
+A: The previous reconciliation algorithm, called the "Stack Reconciler," worked in a recursive manner, 
+blocking the main thread during the update process. Fiber addresses these performance issues by introducing
+an incremental rendering approach, which allows React to split the rendering work into smaller units and prioritize
+updates more effectively.
+
+Q: What are the key features of React Fiber?
+
+A: React Fiber introduces several key features, including incremental rendering, concurrency, error boundaries,
+and improved scheduling, which collectively help to enhance the performance and responsiveness of React applications.
+
+Q: What are fibers in React Fiber?
+
+A: In React Fiber, a fiber is a JavaScript object representing a unit of work. It is similar to a virtual DOM node, 
+but it also contains additional information about the work's state, priority, and other metadata. Each fiber is
+associated with a component instance and represents a part of the component tree.
+
+Q: What is a work-in-progress tree in React Fiber?
+
+A: A work-in-progress tree is a clone of the current component tree used by React during the reconciliation process. 
+React updates the work-in-progress tree, compares it with the current tree, and then commits the changes to the DOM.
+
+Q: How does React Fiber improve the rendering performance?
+
+A: React Fiber improves rendering performance by introducing incremental rendering, which allows React to split
+the rendering work into smaller units and prioritize updates more effectively. This approach ensures that high-priority
+updates are processed before lower-priority ones, resulting in a smoother user experience. 
+In addition, React Fiber can pause and resume the work as needed, yielding control back to the browser and
+maintaining responsiveness.
+
+Q: What are the three main phases of the Fiber lifecycle?
+
+A: The Fiber lifecycle consists of three main phases:
+
+Render Phase: React computes the new component tree based on the updates (e.g., new state or props). During this phase,
+React can pause and resume the work as needed, allowing it to yield control back to the browser and maintain responsiveness.
+Commit Phase: Once the render phase is complete, React moves to the commit phase, where it applies the changes 
+calculated during the render phase to the DOM. This phase cannot be interrupted, as it involves making actual changes
+to the DOM.
+Cleanup Phase: After the commit phase, React performs any necessary cleanup, such as unmounting components 
+that are no longer needed, and running side effects like componentDidUpdate or componentWillUnmount.
+
+Q: How does React Fiber handle errors?
+
+A: React Fiber introduces a new error-handling mechanism called Error Boundaries, which allows developers to catch errors
+in the component tree and display a fallback UI. Error Boundaries are components that implement the componentDidCatch
+method or use the static getDerivedStateFromError method. When an error occurs within a component tree, React will look for
+the nearest Error Boundary and delegate error handling to it, preventing the entire application from crashing.
+
+Q: Is React Fiber backward compatible with previous versions of React?
+
+A: Yes, React Fiber is designed to be backward compatible with previous versions of React. Most existing applications
+should work without any modifications when updated to a version of React that uses Fiber. However, some deprecated
+lifecycle methods have been removed, and there may be some edge cases where the behavior has changed. 
+It's recommended to thoroughly test your application after upgrading to ensure everything works as expected.
+
+
+### React Counter Interview ###
+
+## The main file that run in browser in React is App.jsx ##
+
+import { useState } from 'react'
+import reactLogo from './assets/react.svg'
+import viteLogo from '/vite.svg'
+import './App.css'
+
+function App() {
+  let [counter, SetCounter] = useState(0)
+  const addValue = () => {
+
+	SetCounter(counter+1)
+	SetCounter(counter+1)
+	SetCounter(counter+1)
+	SetCounter(counter+1) //Interviewer often ask what will be the update now?
+
+      // console.log(counter)
+    }
+
+    
+    // counter+=1
+    // SetCounter(counter+1)
+  }
+
+  const removeValue = () => {
+
+      // console.log(counter)
+
+    }
+    // SetCounter(counter-1)
+  }
+  
+
+  return (
+    <>
+    <h1>chai aur react</h1>
+    <h2>Counter Value: {counter}</h2>
+    <button onClick={addValue}>Increase value {counter}</button>
+    <br />
+    <button onClick={removeValue}>Decrease value {counter}</button>
+    </>
+  )
+}
+
+export default App
+=================
+function App() {
+  let [counter, SetCounter] = useState(5)
+  const addValue = () => {
+
+	SetCounter(counter+1) // seesm like 6
+	SetCounter(counter+1) // seesm like 7
+	SetCounter(counter+1) // seesm like 8
+	SetCounter(counter+1) // // seesm like 9 Interviewer often ask what will be the update now?
+
+      // console.log(counter)
+    }
+
+    
+    // counter+=1
+    // SetCounter(counter+1)
+  }
+
+Answer: Though in App() it looks like the value of SetCounter method finally will be 9. But it remains same means after 5
+it will gradually increase the value like 5, 6, 7, 8...
+
+Whenever i want to send any update in UI useState() hooks normally send them to batches. So if we want to change the
+state directly like direct 5 to 9 we have to write:
+
+  let [counter, SetCounter] = useState(5)
+  const addValue = () => {
+
+	SetCounter(prevCounter => prevCounter + 1) 
+	SetCounter(prevCounter => prevCounter + 1) 
+	SetCounter(prevCounter => prevCounter + 1) 
+	SetCounter(prevCounter => prevCounter + 1) 
+
+      // console.log(counter)
+    }
+
+Answer: Now if we press Add button the value will be move 5 to 9 directly. Because the SetCounter() method return a callback
+================================
+
+### React State & Lifecycle in Class Component (Learn With Sumit)  ###
+
+Q. What is State?
+
+Answer: State is "data that changes". State is data inside React.Component. State is a soul property of React.Component.
+State is a Javascript Object
+
+Q. What is "super" in constructor?
+
+Answer: Example:
+
+import React from "react";
+
+class Clock extends React.Component{
+	constructor(props){
+		super(props);
+	}
+......................................
+Here "super" just calls the base class constructor. Here base classs/ parent class is React.Component. By adding 
+"super(props)" line the constructor of parent class(React.Component) will also be called
+
+Q. What is "setState()" method?
+
+Answer: React only understands its default method nothing else. setState() is a React method by which React can understand
+that the state of component should be change in browser DOM.
+
+Q. What is componentDidMount(){} and how it works?
+
+Answer:  componentDidMount(){} is a callback function. componentDidMount(){} is a lifecycle method or hooks of React
+class component. componentDidMount(){} runs after component has been rendered to the DOM.
+Whenever render(){} calls then there will create a new object in virtual DOM. Then it reconcile(diff bet two DOM's)
+
+import React from "react";
+
+class Clock extends React.Component{
+	constructor(props){
+		super(props);
+		this.state = {date: new Date()};
+	}
+
+	componentDidMount(){
+		setInterval(() => {
+			this.setState({
+
+				date: new Date(),
+			});
+
+	}, 1000)
+
+	}
+
+	render(){
+	
+		return(
+			<h1 className="heading">
+				<span className="text">{this.state.date.toLocaleTimeString(this.props.locale)}</span>
+			</h1>
+		)
+
+	}
+}
+
+Q. How componentWillUnmount() works?
+
+Answer: componentWillUnmount() is a lifecycle method or hooks of React
+class component whenever a component will unmount it will call just when the component will unmount 
+
+### Array.splice() ###
+
+Array.splice() modifies original array
+
+### React has one-way data flow or binding whreas vue has two-way data binding. Data will always flow from  top to bottom
+
+
+
+
+
+
+
+
+
+ 
